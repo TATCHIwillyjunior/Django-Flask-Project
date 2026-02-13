@@ -1,0 +1,5 @@
+{% for s in stories %}
+  <h2>{{ s.title }}</h2>
+  <p>{{ s.description }}</p>
+  <a href="{% url 'play_start' s.id %}">Play</a>
+{% endfor %}
