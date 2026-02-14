@@ -55,6 +55,23 @@ def get_page(id):
     page = Page.query.get_or_404(id)
     return jsonify({'id': page.id, 'text': page.text, 'is_ending': page.is_ending, 'choices': [{'id': c.id, 'text': c.text, 'next_page_id': c.next_page_id} for c in page.choices]})
 
+# GET /choices/<id> for Level 10/13/16 (not required for Level 7/10) - returns choice details including next_page_id
+# @app.route('/pages/<int:page_id>/choices', methods=['GET'])
+# def get_page_choices(page_id):
+#     page = Page.query.get_or_404(page_id)
+#     choices = Choice.query.filter_by(page_id=page_id).all()
+#     return jsonify([{'id': c.id, 'page_id': c.page_id, 'text': c.text, 'next_page_id': c.next_page_id} for c in choices])
+
+# @app.route('/choices/<int:choice_id>', methods=['GET'])
+# def get_choice(choice_id):
+#     choice = Choice.query.get_or_404(choice_id)
+#     return jsonify({'id': choice.id, 'page_id': choice.page_id, 'text': choice.text, 'next_page_id': choice.next_page_id})
+
+# @app.route('/choices', methods=['GET'])
+# def get_all_choices():
+#     choices = Choice.query.all()
+#     return jsonify([{'id': c.id, 'page_id': c.page_id, 'text': c.text, 'next_page_id': c.next_page_id} for c in choices])
+
 # Writing endpoints (for Level 10/13/16)
 
 @app.route('/stories', methods=['POST'])
@@ -105,11 +122,11 @@ def delete_story(id):
     return jsonify({'message': 'Story deleted'}), 200
 # 
 # DElete all stories (for testing purposes)
-@app.route('/stories', methods=['DELETE'])
-def delete_all_stories():
-    count = Story.query.delete()
-    db.session.commit()
-    return jsonify({'message': f'{count} stories deleted'}), 200
+# @app.route('/stories', methods=['DELETE'])
+# def delete_all_stories():
+#     count = Story.query.delete()
+#     db.session.commit()
+#     return jsonify({'message': f'{count} stories deleted'}), 200
 
 @app.route('/stories/<int:story_id>/pages', methods=['POST'])
 def create_page(story_id):
@@ -130,6 +147,21 @@ def create_choice(page_id):
     db.session.add(choice)
     db.session.commit()
     return jsonify({'id': choice.id, 'page_id': choice.page_id, 'text': choice.text, 'next_page_id': choice.next_page_id}), 201
+
+
+# Delete all pages for a story (for testing purposes)
+# @app.route('/pages/<int:page_id>/choices', methods=['DELETE'])
+# def delete_page_choices(page_id):
+#     count = Choice.query.filter_by(page_id=page_id).delete()
+#     db.session.commit()
+#     return jsonify({'message': f'{count} choices deleted'}), 200
+
+# @app.route('/choices/<int:choice_id>', methods=['DELETE'])
+# def delete_choice(choice_id):
+#     choice = Choice.query.get_or_404(choice_id)
+#     db.session.delete(choice)
+#     db.session.commit()
+#     return jsonify({'message': 'Choice deleted'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
