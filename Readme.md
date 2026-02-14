@@ -110,7 +110,7 @@ You can test:
 
 Example POST body for creating a story:
 
-```json
+json
 {
   "title": "Voyage of the Silver Whale",
   "description": "A fantasy adventure on a flying ship.",
@@ -119,12 +119,15 @@ Example POST body for creating a story:
 }
 
 
-⚙️ Installation & Setup
+## ⚙️ Installation & Setup
 1. Clone the repository
 bash
 git clone https://github.com/TATCHIwillyjunior/Django-Flask-Project
 cd Django-Flask-Project
-🐍 Flask Backend Setup
+
+
+## 🐍 Flask Backend Setup
+
 Create virtual environment
 bash
 cd flask_api
@@ -140,7 +143,9 @@ API runs at:
 
 Code
 http://127.0.0.1:5000
-🎨 Django Frontend Setup
+
+
+## 🎨 Django Frontend Setup
 Install dependencies
 bash
 cd django_frontend
@@ -152,7 +157,9 @@ Frontend runs at:
 
 Code
 http://127.0.0.1:8000
-🧭 How the System Works
+
+
+## 🧭 How the System Works
 Create a Story
 
 Add Pages to the story
