@@ -1,9 +1,11 @@
 from django import forms
 
-class StoryForm(forms.Form):
-    title = forms.CharField(max_length=200)
-    description = forms.CharField(widget=forms.Textarea, required=False)
-    illustration_url = forms.URLField(required=False)
+from .models import Story
+
+class StoryForm(forms.ModelForm): 
+    class Meta: 
+        model = Story
+        fields = ['title', 'description', 'status']
 
 class PageForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)

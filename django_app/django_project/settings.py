@@ -60,10 +60,14 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'custom_filters': 'game.templatetags',
+            }
         },
     },
 ]
@@ -120,5 +124,3 @@ STATIC_URL = 'static/'
 
 # Configuration settings for Flask API
 
-FLASK_API_BASE_URL = os.getenv("FLASK_API_BASE_URL", "http://127.0.0.1:5000")
-FLASK_API_KEY = os.getenv("FLASK_API_KEY", "my_default_api_key")

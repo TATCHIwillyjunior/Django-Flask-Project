@@ -1,0 +1,34 @@
+// game/templates/game/play.html
+{% extends "game/base.html" %}
+
+{% block title %}Play Story{% endblock %}
+
+{% block content %}
+    <div class="nav-bar">
+        <h1>Play Story</h1>
+        <a href="{% url 'story_list' %}" class="btn">Back to Stories</a>
+    </div>
+
+    <div class="page-display">
+        <div class="page-text">
+            <p>{{ page.text }}</p>
+        </div>
+
+        {% if page.is_ending %}
+            <div class="alert alert-success">
+                <strong>Ending:</strong> {{ page.ending_label }}
+            </div>
+            <a href="{% url 'story_list' %}" class="btn">Back to Story List</a>
+        {% else %}
+            <h2>Choices:</h2>
+            <div class="choices-list">
+                {% for choice in page.choices %}
+                    <a href="{% url 'make_choice' story_id=story_id page_id=page.id choice_id=choice.id %}"
+                       class="choice-btn">
+                        {{ choice.text }}
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

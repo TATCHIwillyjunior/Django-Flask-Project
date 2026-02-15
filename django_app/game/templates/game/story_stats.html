@@ -1,0 +1,35 @@
+// game/templates/game/story_stats.html
+{% extends "game/base.html" %}
+
+{% block title %}Story Statistics{% endblock %}
+
+{% block content %}
+    <div class="nav-bar">
+        <h1>Stats for {{ story.title }}</h1>
+        <a href="{% url 'stats' %}" class="btn">Back to All Stats</a>
+    </div>
+
+    <div class="stats-container">
+        <h2>Total Plays: {{ total_plays }}</h2>
+
+        <h2>Ending Distribution:</h2>
+        {% if ending_percentages %}
+            <table class="stats-chart">
+                <tr>
+                    <th>Ending</th>
+                    <th>Percentage</th>
+                    <th>Plays</th>
+                </tr>
+                {% for ending_id, percentage in ending_percentages.items %}
+                    <tr>
+                        <td>{{ ending_labels|get_item:ending_id }}</td>
+                        <td>{{ percentage|floatformat:2 }}%</td>
+                        <td>{{ endings|get_item:ending_id }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No ending stats available.</p>
+        {% endif %}
+    </div>
+{% endblock %}
