@@ -8,17 +8,14 @@ from django.utils import timezone
 FLASK_API_URL = 'http://127.0.0.1:5000'
 
 def story_list(request):
-    query = request.GET.get('q', '')
-    params = {'q': query} if query else {}
+    query = request.GET.get('q', '').strip()
+
+    params = {'status': 'published'}
+    if query:
+        params['q'] = query
 
     response = requests.get(f'{FLASK_API_URL}/stories', params=params)
     stories = response.json()
-
-    # Add success/error messages if needed
-    if 'story_created' in request.GET:
-        messages.success(request, 'Story created successfully!')
-    if 'story_deleted' in request.GET:
-        messages.success(request, 'Story deleted successfully!')
 
     return render(request, 'game/story_list.html', {
         'stories': stories,
@@ -49,11 +46,11 @@ def play_story(request, story_id):
     page = response.json()
 
     PlaySession.objects.create(
-        session_key=session_key,
-        story_id=story_id,
-        current_page_id=page['id'],
-        updated_at=timezone.now()
-    )
+    session_key=session_key,
+    story_id=story_id,
+    current_page_id=page['id']
+)
+
 
     return render(request, 'game/play.html', {'page': page, 'story_id': story_id})
 

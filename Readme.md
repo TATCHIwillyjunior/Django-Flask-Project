@@ -171,3 +171,9 @@ Add Choices that connect pages
 Django frontend displays the story and lets users navigate choices
 
 Flask API stores and manages all data
+
+
+
+
+
+

@@ -17,5 +17,9 @@ class PlaySession(models.Model):
     current_page_id = models.IntegerField()
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('session_key', 'story_id')
+
+
     def __str__(self):
-        return f"Session {self.session_id} on story {self.story_id} at page {self.current_page_id}"
+        return f"Session {self.session_key} on story {self.story_id} at page {self.current_page_id}"
