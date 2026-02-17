@@ -124,3 +124,6 @@ STATIC_URL = 'static/'
 
 # Configuration settings for Flask API
 
+FLASK_API_KEY = "SECRET123"  # must match Flask API_KEY
+
+

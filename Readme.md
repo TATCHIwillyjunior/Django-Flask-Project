@@ -110,14 +110,187 @@ You can test:
 
 Example POST body for creating a story:
 
-json
+''''json
 {
   "title": "Voyage of the Silver Whale",
   "description": "A fantasy adventure on a flying ship.",
   "status": "draft",
   "start_page_id": 13
-}
+}'''
 
+## 🔐 Level 16 — Authentication, Roles & Permissions -->
+Level 16 introduces user accounts, role‑based permissions, story moderation, and API security.
+This section describes how these features are implemented in the Django–Flask architecture.
+
+## 👤 User Accounts (Django Authentication)
+The project now supports:
+
+User registration
+
+Login / Logout
+
+Password hashing
+
+Session management
+
+Implemented using Django’s built‑in authentication system.
+
+Registration Fields
+username
+
+email
+
+password
+
+role (Reader or Author)
+
+## 🧑‍💼 User Roles
+Each user has a Profile with a role:
+
+Role	Description
+Reader (default)	Can play published stories and view their own play history
+Author	Can create, edit, and delete their own stories
+Admin (is_staff=True)	Can moderate stories and view global stats
+Roles are stored in the Profile model and automatically created when a user is created.
+
+## 🔒 Role‑Based Permissions
+✔ Readers
+Can browse published stories
+
+Can play stories
+
+Can view only their own play history
+
+Cannot access author tools
+
+✔ Authors
+Can create stories
+
+Can edit/delete only their own stories
+
+Cannot suspend stories
+
+✔ Admins
+Can suspend stories
+
+Can view global statistics
+
+Can access Django admin panel
+
+Author‑only views are protected using a custom decorator:
+
+python
+@author_required
+Admin‑only actions use:
+
+python
+@staff_member_required
+
+## 📊 Play Tracking (Updated for Level 16)
+The Play model now includes:
+
+python
+user = models.ForeignKey(User, on_delete=models.CASCADE)
+This means:
+
+Every completed ending is linked to the logged‑in user
+
+Readers only see their own plays
+
+Authors/admins see global stats
+
+Story‑specific and global statistics are filtered based on user role.
+
+## 🚫 Story Moderation (Admin Only)
+Admins can suspend a story:
+
+Suspended stories are hidden from the public list
+
+Suspended stories cannot be played
+
+Authors cannot unsuspend their own stories
+
+Suspension is performed via a PUT request to the Flask API:
+
+json
+{ "status": "suspended" }
+## 🔑 Flask API Security (Mandatory for Level 16)
+All write operations (POST, PUT, DELETE) in Flask are now protected by an API key.
+
+Django sends:
+Code
+X-API-KEY: <secret>
+Flask validates:
+python
+if request.headers.get("X-API-KEY") != API_KEY:
+    return jsonify({"error": "Invalid API key"}), 401
+Public endpoints (GET) remain open:
+/stories
+
+/stories/<id>
+
+/pages/<id>
+
+This ensures that only the Django frontend can modify story data.
+
+## 🧭 Updated System Workflow (Level 16)
+User logs in (Reader / Author / Admin)
+
+Reader can:
+
+Play published stories
+
+Resume progress (auto‑save)
+
+View their own stats
+
+Author can:
+
+Create/edit/delete their own stories
+
+Preview draft stories
+
+Admin can:
+
+Suspend stories
+
+View global stats
+
+Django sends authenticated write requests to Flask using the API key
+
+Flask validates the key before modifying data
+
+## 🧪 Level 16 Test Checklist
+Use this to verify your implementation:
+
+Authentication
+Register reader/author accounts
+
+Login/logout works
+
+Permissions
+Reader cannot access author tools
+
+Author cannot edit another author’s story
+
+Admin can suspend stories
+
+API Security
+Flask rejects write requests without API key
+
+Django sends API key correctly
+
+Stats
+Reader sees only their own plays
+
+Author/admin sees global stats
+
+Story‑specific stats display correctly
+
+Moderation
+Suspended stories disappear from public list
+
+Suspended stories cannot be played
 
 ## ⚙️ Installation & Setup
 1. Clone the repository

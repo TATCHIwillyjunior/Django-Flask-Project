@@ -1,3 +1,4 @@
+from functools import wraps
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import NotFound, BadRequest
@@ -6,6 +7,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stories.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+API_KEY = "SECRET123" # you can change this, but keep it in sync with Django
 
 # Models
 class Story(db.Model):
@@ -31,6 +34,19 @@ class Choice(db.Model):
     next_page_id = db.Column(db.Integer, db.ForeignKey('page.id'), nullable=False)
     page = db.relationship('Page', backref='choices', foreign_keys=[page_id])
     next_page = db.relationship('Page', foreign_keys=[next_page_id])
+
+# API key decorator
+
+def require_api_key(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        key = request.headers.get("X-API-KEY")
+        if key != API_KEY:
+            return jsonify({"error": "Invalid API key"}), 401
+        return func(*args, **kwargs)
+    return wrapper
+
+
 
 # Create tables
 with app.app_context():
@@ -70,6 +86,7 @@ def get_story(id):
     })
 
 @app.route('/stories', methods=['POST'])
+@require_api_key
 def create_story():
     try:
         data = request.get_json()
@@ -94,6 +111,7 @@ def create_story():
         return error_response(str(e))
 
 @app.route('/stories/<int:id>', methods=['PUT'])
+@require_api_key
 def update_story(id):
     try:
         story = Story.query.get_or_404(id)
@@ -120,6 +138,7 @@ def update_story(id):
         return error_response(str(e))
 
 @app.route('/stories/<int:id>', methods=['DELETE'])
+@require_api_key
 def delete_story(id):
     try:
         story = Story.query.get_or_404(id)
@@ -236,6 +255,8 @@ def get_start_page(id):
         'ending_label': page.ending_label,
         'choices': [{'id': c.id, 'text': c.text, 'next_page_id': c.next_page_id} for c in page.choices]
     })
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

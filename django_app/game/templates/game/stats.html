@@ -4,28 +4,37 @@
 {% block title %}Game Statistics{% endblock %}
 
 {% block content %}
-    <div class="nav-bar">
-        <h1>Game Statistics</h1>
-        <a href="{% url 'story_list' %}" class="btn">Back to Stories</a>
-    </div>
+<div class="nav-bar">
+    <h1>Game Statistics</h1>
+    <a href="{% url 'story_list' %}" class="btn">Back to Stories</a>
+</div>
 
-    <div class="stats-container">
-        <h2>Plays per Story</h2>
-        {% if plays_per_story %}
-            <table class="stats-chart">
-                <tr>
-                    <th>Story</th>
-                    <th>Plays</th>
-                </tr>
-                {% for story_id, count in plays_per_story.items %}
-                    <tr>
-                        <td><a href="{% url 'story_stats' story_id %}">{{ stories|get_item:story_id }}</a></td>
-                        <td>{{ count }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {% else %}
-            <p>No play stats available.</p>
-        {% endif %}
-    </div>
+<div class="stats-container">
+    <h2>Plays per Story</h2>
+    {% if plays_per_story %}
+    <table class="stats-chart">
+        <tr>
+            <th>Story</th>
+            <th>Plays</th>
+        </tr>
+        {% for story_id, count in plays_per_story.items %}
+        <tr>
+            <td>
+                <a href="{% url 'story_stats' story_id %}">
+                    {% for s in stories %}
+                    {% if s.id == story_id or s.id == story_id|stringformat:"i" %}
+                    {{ s.title }}
+                    {% endif %}
+                    {% endfor %}
+                </a>
+            </td>
+            <td>{{ count }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+    {% else %}
+    <p>No play stats available.</p>
+    {% endif %}
+</div>
 {% endblock %}

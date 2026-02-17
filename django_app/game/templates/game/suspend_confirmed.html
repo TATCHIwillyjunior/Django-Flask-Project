@@ -1,0 +1,12 @@
+{% extends "game/base.html" %}
+
+{% block title %}Suspend Story{% endblock %}
+
+{% block content %}
+<h2>Suspend Story</h2>
+<p>Are you sure you want to suspend this story? It will be hidden and cannot be played.</p>
+<form method="POST">
+    {% csrf_token %}
+    <button class="btn btn-danger" type="submit">Confirm Suspend</button>
+    <a href="{% url 'story_list' %}" class="btn">Cancel</a>
+{% endblock %}
